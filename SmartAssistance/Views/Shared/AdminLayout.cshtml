@@ -1,0 +1,216 @@
+﻿﻿<!DOCTYPE html>
+
+<html lang="es-pe">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/shared/css/admin-layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SmartAssistance.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - SmartAssistance</title>
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+<body>
+
+    <div class="bg-light py-2">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <span><strong>Centro Médico</strong></span>
+
+            <span class="mx-auto"><strong id="stnWelcome"></strong></span>
+
+            <a href="" class="btn btn-link btn-sm" data-toggle="modal" data-target="#mdlUpdateCredential">Cambiar Contraseña</a>
+            <a href="@Url.Action("Logout", "Access")" class="btn btn-link btn-sm">Logout</a>
+        </div>
+    </div>
+
+    <header>
+        <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">
+                <img src="https://e1.pxfuel.com/desktop-wallpaper/789/272/desktop-wallpaper-business-management-business-growth.jpg" alt="Logo" width="100">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul id="navbarNav" class="navbar-nav mr-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("InterfaceAdmin", "Admins")">
+                            <i class="fa fa-home"></i> Datos personales
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("AttendanceList", "Admins")">
+                            <i class="fa fa-check-circle"></i>
+                            Asistencias
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-users"></i>
+                            Trabajadores
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="@Url.Action("AttendanceEmployees", "Admins")">Lista de asistencias</a>
+                            <a class="dropdown-item" href="@Url.Action("Maintenance", "Admins")">Mantenimiento de trabajadores</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ReportAttendance", "Admins")">
+                            <i class="fa fa-chart-bar"></i>
+                            Reporte de asistencia
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <div id="mdlUpdateCredential" class="modal fade" tabindex="-1" aria-labelledby="mdlUpdateCredential" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header float-right">
+
+                    <h5>Actualizar credenciales</h5>
+
+                    <div class="text-right">
+                        <i data-dismiss="modal" aria-label="Close" class="fa fa-close"></i>
+                    </div>
+
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <div class="box">
+
+                            <label>Nueva contraseña:</label>
+                            <input id="iptNewPassword" type="password" class="form-control" autocomplete="off">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btnUpdateCredential" type="button" class="btn btn-primary" data-dismiss="modal">Actualizar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            $(window).on('load', async function () {
+
+                try {
+
+                    await getInformation();
+
+                } catch (error) {
+
+                    console.error('Error durante la carga de datos: ', error);
+                }
+            });
+
+            $('#btnUpdateCredential').on('click', function () {
+
+                var credentials = new FormData();
+
+                credentials.append('Password', $('#iptNewPassword').val());
+
+                updateCredential(credentials);
+            });
+
+           function updateCredential(credentials) {
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("UpdateCredential", "Admins")',
+                    method: 'POST',
+                    data: credentials,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+
+                        if (data === true) {
+
+                            Swal.fire({
+
+                                icon: 'success',
+                                title: 'Credenciales actualizadas correctamente!',
+                                text: 'Tus credenciales se actualizaron correctamente, recuerde que su sesión expira en 1 hora.'
+                            });
+                        }
+                        else {
+
+                            Swal.fire({
+
+                                icon: 'error',
+                                title: 'Actualizacion de credenciales incorrecta!',
+                                text: 'Ocurrio un error al actualizar sus credenciales, vuelva a escribir.'
+                            });
+                        }
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', "_self");
+                    }
+                });
+            }
+
+            async function getInformation() {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("GetInformation", "Access")',
+                        method: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+
+                    $('#stnWelcome').text(`Bienvenido, ${data.Firstname} ${data.Lastname}`);
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+        });
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
