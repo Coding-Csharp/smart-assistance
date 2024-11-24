@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SmartAssistance.Models;
 using System.Security.Claims;
 
@@ -53,7 +54,35 @@ namespace SmartAssistance.Controllers
 
         #region Json
 
+        [HttpGet]
+        public async Task<IActionResult> ValidateAttendanceToday()
+        {
+            DateTime today = DateTime.Now.Date;
 
+            string validation = "MARCAR";
+
+            var assist = await context.Set<Assist>()
+                .Where(a => a.EmployeesId == GetPersonId() &&
+                (a.CheckIn.HasValue || a.CheckOut.HasValue) &&
+                (a.CheckIn.Value.Date == today || a.CheckOut.Value.Date == today))
+                .FirstOrDefaultAsync();
+
+            if (assist != null)
+            {
+                if (assist.CheckIn.HasValue && assist.CheckOut.HasValue &&
+                    assist.CheckIn.Value.Date == today && assist.CheckOut.Value.Date == today)
+                {
+                    validation = "BLOQUEADO";
+                }
+                else if (assist.CheckIn.HasValue && assist.CheckIn.Value.Date == today)
+                {
+                    validation = "SALIDA";
+                }
+            }
+
+            return Content(JsonConvert.SerializeObject
+                (validation), "application/json");
+        }
 
         #endregion
 
