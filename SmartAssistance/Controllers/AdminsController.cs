@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using SmartAssistance.Models;
 using System.Security.Claims;
+using SmartAssistance.Models;
 
 namespace SmartAssistance.Controllers
 {
@@ -82,6 +82,62 @@ namespace SmartAssistance.Controllers
 
             return Content(JsonConvert.SerializeObject
                 (validation), "application/json");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MarkAttendance
+            (string markType)
+        {
+            var result = false;
+
+            if (markType == "ENTRADA")
+            {
+                var today = DateTime.Now;
+
+                var limitHour = new DateTime
+                    (today.Year, today.Month, today.Day, 9, 0, 0);
+
+                var minuteLate = 0;
+
+                if (today > limitHour)
+                {
+                    TimeSpan difference = today - limitHour;
+
+                    minuteLate = (int)difference.TotalMinutes;
+                }
+
+                var assist = await context.Set<Assist>()
+                    .Where(a => a.EmployeesId == GetPersonId() &&
+                    a.CheckIn.HasValue &&
+                    a.CheckIn.Value.Date == today.Date)
+                    .FirstOrDefaultAsync();
+
+                if (assist == null)
+                {
+                    await context.Set<Assist>().AddAsync
+                    (new(GetPersonId(), DateTime.Now, null, minuteLate, "FELIZ"));
+
+                    await context.SaveChangesAsync();
+
+                    result = true;
+                }
+            }
+            else if (markType == "SALIDA")
+            {
+                var assist = await context.Set<Assist>()
+                    .Where(a => a.EmployeesId == GetPersonId() &&
+                    a.CheckOut == null).FirstOrDefaultAsync();
+
+                if (assist != null)
+                {
+                    result = await context.Set<Assist>().Where(a => a.Id == assist.Id)
+                    .ExecuteUpdateAsync(a => a
+                    .SetProperty(u => u.CheckOut, DateTime.Now)) > 0;
+                }
+            }
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
         }
 
         #endregion
