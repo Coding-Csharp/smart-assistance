@@ -8,5 +8,17 @@
 
         public virtual Employee Employee { get; } = null!;
         public virtual Position Position { get; } = null!;
+
+        public Assign()
+        {
+            this.EmployeesId = string.Empty;
+            this.PositionsId = 0;
+        }
+        public Assign
+            (string employeeId, int positionId)
+        {
+            this.EmployeesId = employeeId;
+            this.PositionsId = positionId;
+        }
     }
 }
