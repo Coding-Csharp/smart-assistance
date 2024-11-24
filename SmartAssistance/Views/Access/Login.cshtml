@@ -1,0 +1,215 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="~/access/css/login.css" />
+    <title>Iniciar sesion</title>
+
+</head>
+<body>
+
+    <div class="loginbox">
+        <img src="https://i.imgur.com/ZYzTdD0.png" class="avatar">
+
+        <h1>Iniciar sesion</h1>
+
+        <form id="frmCredentials">
+
+            <p>Username</p> <input id="iptUsername" type="text" placeholder="Ingresar DNI" required autocomplete="off">
+            <p>Password</p> <input id="iptPassword" type="password" placeholder="Ingresar contraseña" required autocomplete="off">
+
+            <select id="sltRoles">
+                <option selected>Seleccione su roll</option>
+                <option>ADMINISTRADOR</option>
+                <option>TRABAJADOR</option>
+            </select>
+
+            <hr />
+
+            <input id="iptLogin" type="submit" />
+            <a href="" data-toggle="modal" data-target="#mdlUpdateCredential">Olvidaste tu contraseña?</a>
+
+        </form>
+    </div>
+
+    <div id="mdlUpdateCredential" class="modal fade" tabindex="-1" aria-labelledby="mdlUpdateCredential" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header float-right">
+
+                    <h5>Actualizar credenciales</h5>
+
+                    <div class="text-right">
+                        <i data-dismiss="modal" aria-label="Close" class="fa fa-close"></i>
+                    </div>
+
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <div class="box">
+
+                            <label>Username:</label>
+                            <input id="iptNewUsername" type="text" class="form-control" autocomplete="off">
+
+                            <label>Password:</label>
+                            <input id="iptNewPassword" type="password" class="form-control" autocomplete="off">
+
+                            <label>Seleccione su roll:</label>
+                            <select id="sltNewRoles" class="form-control">
+                                <option>ADMINISTRADOR</option>
+                                <option>TRABAJADOR</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btnUpdateCredential" type="button" class="btn btn-primary">Actualizar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#iptLogin').prop('disabled', false);
+            $('#iptLogin').val('Ingresar');
+
+            $('#frmCredentials').on('submit', function () {
+
+                $('#iptLogin').prop('disabled', true);
+                $('#iptLogin').val('Iniciando sesion...');
+
+                var credentials = new FormData();
+
+                credentials.append('Username', $('#iptUsername').val());
+                credentials.append('Password', $('#iptPassword').val());
+                credentials.append('Role', $('#sltRoles').val());
+
+                login(credentials);
+
+                return false;
+            });
+
+            $('#btnUpdateCredential').on('click', function () {
+
+                var credentials = new FormData();
+
+                credentials.append('Username', $('#iptNewUsername').val());
+                credentials.append('Password', $('#iptNewPassword').val());
+                credentials.append('Role', $('#sltNewRoles').val());
+
+                updateCredential(credentials);
+
+                return false;
+            });
+
+            function login(credentials) {
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("Login", "Access")',
+                    method: 'POST',
+                    data: credentials,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+
+                        if ($('#sltRoles').val() === 'ADMINISTRADOR' && data === true) {
+
+                            window.open('@Url.Action("InterfaceAdmin", "Admins")', "_self");
+                        }
+                        else if ($('#sltRoles').val() === 'TRABAJADOR' && data === true) {
+
+                            window.open('@Url.Action("InterfaceEmployee", "Employees")', "_self");
+                        }
+                        else {
+
+                            Swal.fire({
+
+                                icon: 'error',
+                                title: 'Credenciales incorrectas!',
+                                text: 'Ocurrio un error al validar sus credenciales, vuelva a escribir.'
+                            });
+
+                            $('#iptLogin').prop('disabled', false);
+                            $('#iptLogin').val('Ingresar');
+                        }
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', "_self");
+                    }
+                });
+            }
+
+            function updateCredential(credentials) {
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("UpdateCredential", "Access")',
+                    method: 'POST',
+                    data: credentials,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+
+                        if (data === true) {
+
+                            Swal.fire({
+
+                                icon: 'success',
+                                title: 'Credenciales actualizadas correctamente!',
+                                text: 'Tus credenciales se actualizaron correctamente, recuerde que su sesión expira en 1 hora.',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                willClose: () => {
+
+                                    window.open('@Url.Action("Login", "Access")', "_self");
+                                }
+                            });
+                        }
+                        else {
+
+                            Swal.fire({
+
+                                icon: 'error',
+                                title: 'Actualizacion de credenciales incorrecta!',
+                                text: 'Ocurrio un error al actualizar sus credenciales, vuelva a escribir.'
+                            });
+                        }
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', "_self");
+                    }
+                });
+            }
+        });
+
+    </script>
+
+</body>
+</html>
