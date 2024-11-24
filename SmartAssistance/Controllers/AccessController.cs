@@ -34,6 +34,40 @@ namespace SmartAssistance.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Login
+            (User credential)
+        {
+            var result = await
+                (from ec in context.Set<EmployeeCredential>()
+                 join em in context.Set<Employee>()
+                 on ec.EmployeesId equals em.Id
+                 where ec.EmployeesId == credential.Username &&
+                 ec.Code == credential.Password &&
+                 em.State == "ACTIVO"
+                 select em
+                ).FirstOrDefaultAsync() != null;
+
+            if (result is true)
+            {
+                List<Claim> claims =
+                [
+                    new(ClaimTypes.Role, credential.Role ?? string.Empty),
+                    new(ClaimTypes.Name, credential.Username ?? string.Empty)
+                ];
+
+                ClaimsIdentity claimsIdentity = new(claims,
+                    CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync
+                    (CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
+            }
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
