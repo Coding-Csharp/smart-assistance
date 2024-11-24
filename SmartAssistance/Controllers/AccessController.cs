@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SmartAssistance.Controllers
@@ -20,6 +22,16 @@ namespace SmartAssistance.Controllers
             }
 
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync
+                (CookieAuthenticationDefaults
+                .AuthenticationScheme);
+
+            return RedirectToAction("Login", "Access");
         }
     }
 }
