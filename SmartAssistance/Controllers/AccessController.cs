@@ -78,7 +78,34 @@ namespace SmartAssistance.Controllers
             return RedirectToAction("Login", "Access");
         }
 
+        [HttpPost]
+        [Authorize(Roles = "ADMINISTRADOR,TRABAJADOR")]
+        public async Task<IActionResult> UpdateCredential
+            (User credential)
+        {
+            await context.Set<EmployeeCredential>()
+                .Where(e => e.EmployeesId == GetPersonId())
+                .ExecuteUpdateAsync(e => e
+                .SetProperty(u => u.Code, credential.Password));
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
+        }
+
         [HttpGet]
+        private string GetPersonId()
+        {
+            _claimsPrincipal = HttpContext.User;
+
+            var personId = _claimsPrincipal
+                .FindFirst(ClaimTypes.Name)?
+                .Value.ToString() ?? string.Empty;
+
+            return personId;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "ADMINISTRADOR,TRABAJADOR")]
         public async Task<IActionResult> GetInformation()
         {
             _claimsPrincipal = HttpContext.User;
