@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using SmartAssistance.Models;
-using Newtonsoft.Json;
 
 namespace SmartAssistance.Controllers
 {
+    [Authorize(Roles = "TRABAJADOR")]
     public class EmployeesController
         (SmartAssistanceContext context) :
         Controller
