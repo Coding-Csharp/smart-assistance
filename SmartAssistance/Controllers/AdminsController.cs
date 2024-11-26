@@ -206,6 +206,29 @@ namespace SmartAssistance.Controllers
                 (result), "application/json");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LoadListAttendancesByPersonId
+            (string personId)
+        {
+            var result = await
+                 (from at in context.Set<Assist>()
+                  where at.EmployeesId == personId
+                  select new
+                  {
+                      at.Id,
+                      at.CheckIn.Value.Date,
+                      at.CheckIn,
+                      at.CheckOut,
+                      at.MinuteLate,
+                      WorkedTime = at.CheckOut.HasValue && at.CheckIn.HasValue
+                        ? (at.CheckOut.Value - at.CheckIn.Value).ToString(@"hh\:mm")
+                        : "00:00"
+                  }).ToListAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
         #endregion
 
         #region Cookie
