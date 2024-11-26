@@ -1,0 +1,440 @@
+﻿@{
+    ViewData["Title"] = "Lista asistencia";
+    Layout = "~/Views/Shared/EmployeeLayout.cshtml";
+}
+
+@section Styles {
+
+    <style>
+
+        .btn i {
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 5px 8px;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .modern-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modern-table thead {
+            background: linear-gradient(90deg, #2196F3, #42A5F5);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .modern-table tbody tr {
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        /* primer degradado */
+        .modern-table tbody tr:nth-child(odd) {
+            background-color: #FFFFFF;
+        }
+
+        /* segundo degradado */
+        .modern-table tbody tr:nth-child(even) {
+            background-color: #FFFFFF;
+        }
+
+        .modern-table tbody tr:hover {
+            background-color: #90CAF9;
+            transform: scale(1.01);
+            cursor: pointer;
+        }
+
+        .modern-table td, .modern-table th {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modern-table .btn {
+            border-radius: 4px;
+            font-size: 12px;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .modern-table .btn-primary {
+            background-color: #42A5F5;
+            border-color: #42A5F5;
+            color: white;
+        }
+
+        .modern-table .btn-danger {
+            background-color: #E57373;
+            border-color: #E57373;
+            color: white;
+        }
+
+        .modern-table .btn-primary:hover {
+            background-color: #1E88E5;
+            border-color: #1E88E5;
+        }
+
+        .modern-table .btn-danger:hover {
+            background-color: #D32F2F;
+            border-color: #D32F2F;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            margin: 0 2px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            background: #42A5F5;
+            color: white;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #1E88E5;
+            border-color: #1E88E5;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            margin-left: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #42A5F5;
+            outline: none;
+        }
+
+        .dt-buttons .btn {
+            margin-right: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+}
+
+<div class="container">
+
+    <br />
+
+    <div class="row header" style="text-align:center;color:green">
+        <h3>Control de asistencias</h3>
+    </div>
+
+    <a id="btnAttendance" class="btn btn-primary" data-toggle="modal" data-target="#mdlRegisterAttendance">Marcar asistencia</a>
+
+    <hr />
+
+    <table id="tblAttendances" class="table table-striped table-hover table-bordered modern-table"></table>
+
+</div>
+
+<div id="mdlRegisterAttendance" class="modal fade" tabindex="-1" aria-labelledby="mdlRegisterAttendance" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>Fecha:</label>
+                <input id="iptDate" class="form-control" readonly>
+
+                <label>Hora de entrada:</label>
+                <input id="iptCheckIn" class="form-control" readonly>
+
+                <label>Hora de salida:</label>
+                <input id="iptCheckOut" class="form-control" readonly>
+            </div>
+            <div class="modal-footer">
+                <button id="btnRegisterAttendance" type="button" class="btn btn-primary" data-dismiss="modal">Registrar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            var isCheckIn = true;
+            var attendances = [];
+
+            $(window).on('load', async function () {
+
+                try {
+
+                    await loadListAttendances();
+
+                } catch (error) {
+
+                    console.error('Error durante la carga de datos: ', error);
+                }
+            });
+
+            $("#btnAttendance").on("click", function() {
+
+                if (isCheckIn) {
+
+                    $("#modalTitle").text("Registrar entrada");
+                    $("#iptDate").val(getDate());
+                    $("#iptCheckIn").val(getTime());
+                    $("#iptCheckOut").val("---");
+
+                } else {
+
+                    $("#modalTitle").text("Registrar salida");
+                    $("#iptDate").val(getDate());
+                    $("#iptCheckIn").val("---");
+                    $("#iptCheckOut").val(getTime());
+                }
+            });
+
+            $("#btnRegisterAttendance").on("click", async function() {
+
+                if (isCheckIn) {
+
+                    await markAttendance("ENTRADA");
+                    await loadListAttendances();
+
+                    isCheckIn = false;
+
+                } else {
+
+                    await markAttendance("SALIDA");
+                    await loadListAttendances();
+
+                    $('#btnAttendance').prop('disabled', true).removeAttr('data-toggle');
+                }
+            });
+
+            async function loadListAttendances() {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("LoadListAttendances", "Employees")',
+                        method: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+
+                    attendances = data;
+
+                    var dataa = await jQuery.ajax({
+
+                        url: '@Url.Action("ValidateAttendanceToday", "Employees")',
+                        method: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+
+                    if (dataa === 'MARCAR'){
+
+                        isCheckIn = true;
+                    }
+                    if (dataa === 'SALIDA'){
+
+                        isCheckIn = false;
+                    }
+                    if (dataa === 'BLOQUEADO'){
+
+                        isCheckIn = null;
+
+                        $('#btnAttendance').prop('disabled', true).removeAttr('data-toggle');
+                    }
+
+                    fillTableAttendances(attendances);
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            async function markAttendance(markType) {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("MarkAttendance", "Employees")' + `?markType=${markType}`,
+                        method: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+
+                    if (data === true) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Se marco su asistencia!',
+                            text: `Se registro correctamente su hora de ${markType}.`
+                        });
+
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No se marco la asistencia!',
+                            text: `No se pudo registrar su hora de ${markType}.`
+                        });
+                    }
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            function fillTableAttendances(listAttendances) {
+
+                if (listAttendances.length === 0) {
+
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No se encontraron resultados!',
+                        text: 'No existen datos.'
+                    });
+
+                    return;
+                }
+
+                var columns = [];
+
+                columns = [
+                    { data: 'Date', title: 'Fecha' },
+                    { data: 'Id', title: 'Id', visible: false },
+                    { data: 'Firstname', title: 'Nombre' },
+                    { data: 'Lastname', title: 'Apellido' },
+                    { data: 'CheckIn', title: 'Hora de ingreso' },
+                    { data: 'CheckOut', title: 'Hora de salida' },
+                    { data: 'MinuteLate', title: 'Min tarde' },
+                    { data: 'WorkedTime', title: 'Horas trabajadas' },
+                    { data: 'EmotionalState', title: 'Estado emocional' }
+                ];
+
+                if ($.fn.DataTable.isDataTable('#tblAttendances')) {
+
+                    $('#tblAttendances').DataTable().clear().destroy();
+                }
+
+                for (var i = 0; i < listAttendances.length; ++i) {
+
+                    var date = new Date(listAttendances[i].Date);
+
+                    listAttendances[i].Date = getFormattedDate(date);
+
+                    var checkInDate = new Date(listAttendances[i].CheckIn);
+
+                    listAttendances[i].CheckIn = getFormattedTime(checkInDate);
+
+                    if (listAttendances[i].CheckOut !== null){
+
+                        var checkOutDate = new Date(listAttendances[i].CheckOut);
+
+                        listAttendances[i].CheckOut = getFormattedTime(checkOutDate);
+                    }
+                    else {
+
+                        listAttendances[i].CheckOut = null;
+                    }
+                }
+
+                $('#tblAttendances').DataTable({
+                    data: listAttendances,
+                    columns: columns,
+                    searching: true,
+                    paging: true,
+                    ordering: true
+                });
+            }
+
+            function getDateTime() {
+
+                const date = new Date();
+
+                const day = date.getDate();
+                const mounth = date.getMonth() + 1;
+                const year = date.getFullYear();
+                const hour = date.getHours();
+                const minutes = date.getMinutes();
+
+                return `${day}/${mounth}/${year} ${hour}:${minutes}`;
+            }
+
+            function getDate() {
+
+                const date = new Date();
+
+                const day = date.getDate();
+                const mounth = date.getMonth() + 1;
+                const year = date.getFullYear();
+
+                return `${day}/${mounth}/${year}`;
+            }
+
+            function getTime() {
+
+                const date = new Date();
+
+                const hour = date.getHours();
+                const minutes = date.getMinutes();
+
+                return `${hour}:${minutes}`;
+            }
+
+            function getFormattedDate(date) {
+
+                let day = String(date.getDate()).padStart(2, '0');
+                let mounth = String(date.getMonth() + 1).padStart(2, '0');
+                let year = date.getFullYear();
+                let hour = String(date.getHours()).padStart(2, '0');
+                let minutes = String(date.getMinutes()).padStart(2, '0');
+
+                return `${day}/${mounth}/${year}`;
+            }
+
+            function getFormattedTime(date) {
+
+                let day = String(date.getDate()).padStart(2, '0');
+                let mounth = String(date.getMonth() + 1).padStart(2, '0');
+                let year = date.getFullYear();
+                let hour = String(date.getHours()).padStart(2, '0');
+                let minutes = String(date.getMinutes()).padStart(2, '0');
+
+                return `${hour}:${minutes}`;
+            }
+        });
+
+    </script>
+}

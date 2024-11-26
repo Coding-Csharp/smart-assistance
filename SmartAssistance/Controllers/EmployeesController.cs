@@ -48,6 +48,9 @@ namespace SmartAssistance.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult AttendanceList() => View();
+
         private string GetPersonId()
         {
             _claimsPrincipal = HttpContext.User;
