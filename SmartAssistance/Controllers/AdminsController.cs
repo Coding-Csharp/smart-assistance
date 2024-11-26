@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using SmartAssistance.Models;
+using Microsoft.Reporting.NETCore;
 
 namespace SmartAssistance.Controllers
 {
@@ -284,6 +285,39 @@ namespace SmartAssistance.Controllers
             return _claimsPrincipal
                 .FindFirst(ClaimTypes.Name)?
                 .Value.ToString() ?? string.Empty;
+        }
+
+        #endregion
+
+        #region Report
+
+        [HttpPost]
+        public IActionResult GenerateAttendancePDF
+            ([FromBody] AttendanceReportRequest attendancesRequest)
+        {
+            if (string.IsNullOrWhiteSpace(attendancesRequest.startDate))
+                attendancesRequest.startDate = "-";
+
+            if (string.IsNullOrWhiteSpace(attendancesRequest.endDate))
+                attendancesRequest.endDate = "-";
+
+            var reportViewer = new LocalReport();
+            reportViewer.ReportPath = Path.Combine
+                (Directory.GetCurrentDirectory(), "Reports", "RptAsistencias.rdlc");
+
+            var reportParameters = new[]
+            {
+                 new ReportParameter("FechaDesde", attendancesRequest.startDate),
+                 new ReportParameter("FechaHasta", attendancesRequest.endDate),
+             };
+            reportViewer.SetParameters(reportParameters);
+
+            reportViewer.DataSources.Add(new("dtReporteAsistencia",
+                attendancesRequest.attendances));
+
+            var reportBytes = reportViewer.Render("EXCEL");
+
+            return File(reportBytes, "application/vnd.ms-excel", "AttendanceReport.xls");
         }
 
         #endregion
