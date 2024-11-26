@@ -1,0 +1,1224 @@
+﻿@{
+    ViewData["Title"] = "Mantenimiento";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@section Styles {
+
+    <style>
+
+        .btn i {
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 5px 8px;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .modern-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modern-table thead {
+            background: linear-gradient(90deg, #2196F3, #42A5F5);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .modern-table tbody tr {
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        /* primer degradado */
+        .modern-table tbody tr:nth-child(odd) {
+            background-color: #FFFFFF;
+        }
+
+        /* segundo degradado */
+        .modern-table tbody tr:nth-child(even) {
+            background-color: #FFFFFF;
+        }
+
+        .modern-table tbody tr:hover {
+            background-color: #90CAF9;
+            transform: scale(1.01);
+            cursor: pointer;
+        }
+
+        .modern-table td, .modern-table th {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modern-table .btn {
+            border-radius: 4px;
+            font-size: 12px;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .modern-table .btn-primary {
+            background-color: #42A5F5;
+            border-color: #42A5F5;
+            color: white;
+        }
+
+        .modern-table .btn-danger {
+            background-color: #E57373;
+            border-color: #E57373;
+            color: white;
+        }
+
+        .modern-table .btn-primary:hover {
+            background-color: #1E88E5;
+            border-color: #1E88E5;
+        }
+
+        .modern-table .btn-danger:hover {
+            background-color: #D32F2F;
+            border-color: #D32F2F;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            margin: 0 2px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            background: #42A5F5;
+            color: white;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #1E88E5;
+            border-color: #1E88E5;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            margin-left: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #42A5F5;
+            outline: none;
+        }
+
+        .dt-buttons .btn {
+            margin-right: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+}
+
+<div class="container">
+
+    <br />
+
+    <div class="row header" style="text-align:center;color:green">
+        <h3>Mantenimiento</h3>
+    </div>
+
+    <a class="btn btn-success" data-toggle="modal" data-target="#mdlRegisterEmployee">Agregar</a>
+
+    <hr />
+
+    <table id="tblEmployees" class="table table-striped table-hover table-bordered modern-table"></table>
+
+</div>
+
+<div id="mdlRegisterEmployee" class="modal fade" tabindex="-1" aria-labelledby="mdlRegisterEmployee" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header float-right">
+
+                <h5>Registrar trabajador</h5>
+
+                <div class="text-right">
+                    <i data-dismiss="modal" aria-label="Close" class="fa fa-close"></i>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <div>
+                    <div class="box">
+
+                        <label>Rol:</label>
+                        <select id="sltRoles" class="form-control" required>
+                            <option selected>SELECCIONE UNA OPCION</option>
+                            <option>ADMINISTRADOR</option>
+                            <option>TRABAJADOR</option>
+                        </select>
+
+                        <label>DNI:</label>
+                        <input id="iptId" class="form-control" required>
+
+                        <label>Especialidad:</label>
+                        <select id="sltSpecialties" class="form-control" required></select>
+
+                        <label>Area:</label>
+                        <select id="sltAreas" class="form-control" required></select>
+
+                        <label>Cargo:</label>
+                        <select id="sltPositions" class="form-control" required></select>
+
+                        <label>Fecha de entrada:</label>
+                        <input id="iptDateEntry" type="date" class="form-control" required>
+
+                        <label>Tipo de documento:</label>
+                        <input id="iptTypeDocument" class="form-control" required>
+
+                        <label>Nombres:</label>
+                        <input id="iptFirstName" class="form-control" required>
+
+                        <label>Apellidos:</label>
+                        <input id="iptLastName" class="form-control" required>
+
+                        <label>Fecha de nacimiento:</label>
+                        <input id="iptBirthdate" type="date" class="form-control" required>
+
+                        <label>Nacionalidad:</label>
+                        <input id="iptNationality" class="form-control" required>
+
+                        <label>Genero:</label>
+                        <select id="iptGenre" class="form-control" required>
+                            <option selected>SELECCIONE UNA OPCION</option>
+                            <option>MASCULINO</option>
+                            <option>FEMENINO</option>
+                        </select>
+
+                        <label>Telefono:</label>
+                        <input id="iptPhone" type="number" class="form-control" required>
+
+                        <label>Email:</label>
+                        <input id="iptEmail" type="email" class="form-control" required>
+
+                        <label>Direccion:</label>
+                        <input id="iptAddress" class="form-control" required>
+
+                        <label>Zonas de acceso:</label>
+                        <input id="iptZoneAccess" class="form-control" required>
+
+                        <label>Password:</label>
+                        <input id="iptCode" type="password" class="form-control" required>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnRegisterNewEmployee" type="button" class="btn btn-primary" data-dismiss="modal">Registrar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mdlEditEmployee" class="modal fade" tabindex="-1" aria-labelledby="mdlEditEmployee" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header float-right">
+
+                <h5>Editar trabajador</h5>
+
+                <div class="text-right">
+                    <i data-dismiss="modal" aria-label="Close" class="fa fa-close"></i>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <div>
+                    <div class="box">
+
+                        <label>Rol:</label>
+                        <input id="ipttRole" class="form-control" readonly>
+
+                        <label>DNI:</label>
+                        <input id="ipttId" class="form-control" required>
+
+                        <label>Especialidad:</label>
+                        <select id="slttSpecialties" class="form-control" required></select>
+
+                        <label>Area:</label>
+                        <select id="slttAreas" class="form-control" required></select>
+
+                        <label>Cargo:</label>
+                        <select id="slttPositions" class="form-control" required></select>
+
+                        <label>Fecha de entrada:</label>
+                        <input id="ipttDateEntry" class="form-control" required>
+
+                        <label>Tipo de documento:</label>
+                        <input id="ipttTypeDocument" class="form-control" required>
+
+                        <label>Nombres:</label>
+                        <input id="ipttFirstName" class="form-control" required>
+
+                        <label>Apellidos:</label>
+                        <input id="ipttLastName" class="form-control" required>
+
+                        <label>Fecha de nacimiento:</label>
+                        <input id="ipttBirthdate" class="form-control" required>
+
+                        <label>Nacionalidad:</label>
+                        <input id="ipttNationality" class="form-control" required>
+
+                        <label>Genero:</label>
+                        <input id="ipttGenre" class="form-control" readonly>
+
+                        <label>Telefono:</label>
+                        <input id="ipttPhone" type="number" class="form-control" required>
+
+                        <label>Email:</label>
+                        <input id="ipttEmail" class="form-control" required>
+
+                        <label>Direccion:</label>
+                        <input id="ipttAddress" class="form-control" required>
+
+                        <label>Zonas de acceso:</label>
+                        <input id="ipttZoneAccess" class="form-control" required>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnUpdateEmployee" type="button" class="btn btn-primary" data-dismiss="modal">Actualizar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mdlViewEmployee" class="modal fade" tabindex="-1" aria-labelledby="mdlViewEmployee" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header float-right">
+
+                <h5>Datos del trabajador</h5>
+
+                <div class="text-right">
+                    <i data-dismiss="modal" aria-label="Close" class="fa fa-close"></i>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <div>
+                    <div class="box">
+
+                        <label>Rol:</label>
+                        <input id="iptttRole" class="form-control" readonly>
+
+                        <label>DNI:</label>
+                        <input id="iptttId" class="form-control" readonly>
+
+                        <label>Especialidad:</label>
+                        <input id="iptttSpecialty" class="form-control" readonly>
+
+                        <label>Fecha de entrada:</label>
+                        <input id="iptttDateEntry" class="form-control" readonly>
+
+                        <label>Tipo de documento:</label>
+                        <input id="iptttTypeDocument" class="form-control" readonly>
+
+                        <label>Nombres:</label>
+                        <input id="iptttFirstName" class="form-control" readonly>
+
+                        <label>Apellidos:</label>
+                        <input id="iptttLastName" class="form-control" readonly>
+
+                        <label>Fecha de nacimiento:</label>
+                        <input id="iptttBirthdate" class="form-control" readonly>
+
+                        <label>Nacionalidad:</label>
+                        <input id="iptttNationality" class="form-control" readonly>
+
+                        <label>Genero:</label>
+                        <input id="iptttGenre" class="form-control" readonly>
+
+                        <label>Telefono:</label>
+                        <input id="iptttPhone" class="form-control" readonly>
+
+                        <label>Email:</label>
+                        <input id="iptttEmail" class="form-control" readonly>
+
+                        <label>Direccion:</label>
+                        <input id="iptttAddress" class="form-control" readonly>
+
+                        <label>Zonas de acceso:</label>
+                        <input id="iptttZoneAccess" class="form-control" readonly>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            var employees = [];
+
+            $(window).on('load', async function () {
+
+                try {
+
+                    await loadListEmployees();
+
+                    loadSpecialties();
+                    loadAreas();
+
+                } catch (error) {
+
+                    console.error('Error durante la carga de datos: ', error);
+                }
+            });
+
+            $('#sltRoles').on('change', function () {
+
+                if ($(this).val() === 'ADMINISTRADOR') {
+
+                    $('#iptZoneAccess').attr('readonly', true);
+
+                } else {
+
+                    $('#iptZoneAccess').attr('readonly', false);
+                }
+            });
+
+            $('#slttRoles').on('change', function () {
+
+                if ($(this).val() === 'ADMINISTRADOR') {
+
+                    $('#ipttZoneAccess').attr('readonly', true);
+
+                } else {
+
+                    $('#ipttZoneAccess').attr('readonly', false);
+                }
+            });
+
+            $('#sltAreas').on('change', function () {
+
+                var areasId = $(this).val();
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("LoadPositions", "Admins")' + `?areasId=${areasId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        var contentHtml = '';
+
+                        for (const item of data) {
+
+                            contentHtml += `<option value="${item.Id}">${item.Name}</option>`;
+                        }
+
+                        $('#sltPositions').html(contentHtml);
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', '_self');
+                    }
+                });
+            });
+
+            $('#slttAreas').on('change', function () {
+
+                var areasId = $(this).val();
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("LoadPositions", "Admins")' + `?areasId=${areasId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        var contentHtml = '';
+
+                        for (const item of data) {
+
+                            contentHtml += `<option value="${item.Id}">${item.Name}</option>`;
+                        }
+
+                        $('#slttPositions').html(contentHtml);
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', '_self');
+                    }
+                });
+            });
+
+            $('#btnRegisterNewEmployee').on('click', async function () {
+
+                // Validar Rol
+                if ($("#sltRoles").val() === "SELECCIONE UNA OPCION") {
+                    alert("Por favor, selecciona un rol válido.");
+                    return;
+                }
+
+                // Validar DNI
+                if (!$("#iptId").val()) {
+                    alert("Por favor, ingresa un DNI válido (solo números).");
+                    return;
+                }
+
+                // Validar Especialidad
+                if (!$("#sltSpecialties").val()) {
+                    alert("Por favor, selecciona una especialidad.");
+                    return;
+                }
+
+                // Validar Área
+                if (!$("#sltAreas").val()) {
+                    alert("Por favor, selecciona un área.");
+                    return;
+                }
+
+                // Validar Cargo
+                if (!$("#sltPositions").val()) {
+                    alert("Por favor, selecciona un cargo.");
+                    return;
+                }
+
+                // Validar Fecha de Entrada
+                if (!$("#iptDateEntry").val()) {
+                    alert("Por favor, ingresa una fecha de entrada.");
+                    return;
+                }
+
+                // Validar Tipo de Documento
+                if (!$("#iptTypeDocument").val()) {
+                    alert("Por favor, ingresa el tipo de documento.");
+                    return;
+                }
+
+                // Validar Nombres
+                if (!$("#iptFirstName").val()) {
+                    alert("Por favor, ingresa los nombres.");
+                    return;
+                }
+
+                // Validar Apellidos
+                if (!$("#iptLastName").val()) {
+                    alert("Por favor, ingresa los apellidos.");
+                    return;
+                }
+
+                // Validar Fecha de Nacimiento
+                if (!$("#iptBirthdate").val()) {
+                    alert("Por favor, ingresa la fecha de nacimiento.");
+                    return;
+                }
+
+                // Validar Nacionalidad
+                if (!$("#iptNationality").val()) {
+                    alert("Por favor, ingresa la nacionalidad.");
+                    return;
+                }
+
+                // Validar Género
+                if ($("#iptGenre").val() === "SELECCIONE UNA OPCION") {
+                    alert("Por favor, selecciona un género.");
+                    return;
+                }
+
+                // Validar Teléfono
+                if (!$("#iptPhone").val()) {
+                    alert("Por favor, ingresa un teléfono válido.");
+                    return;
+                }
+
+                // Validar Email
+                if (!$("#iptEmail").val()) {
+                    alert("Por favor, ingresa un correo electrónico válido.");
+                    return;
+                }
+
+                // Validar Dirección
+                if (!$("#iptAddress").val()) {
+                    alert("Por favor, ingresa la dirección.");
+                    return;
+                }
+
+                // Validar Zonas de Acceso
+                if ($("#sltRoles").val() === 'TRABAJADOR') {
+                    if (!$("#iptZoneAccess").val()) {
+                        alert("Por favor, ingresa las zonas de acceso.");
+                        return;
+                    }
+                }
+
+                // Validar Contraseña
+                if (!$("#iptCode").val()) {
+                    alert("Por favor, ingresa la contraseña.");
+                    return;
+                }
+
+                var information = new FormData();
+
+                information.append('Id', $('#iptId').val());
+                information.append('SpecialtiesId', $('#sltSpecialties').val());
+                information.append('DateEntry', $('#iptDateEntry').val());
+                information.append('TypeDocument', $('#iptTypeDocument').val());
+                information.append('Firstname', $('#iptFirstName').val());
+                information.append('Lastname', $('#iptLastName').val());
+                information.append('Birthdate', $('#iptBirthdate').val());
+                information.append('Nationality', $('#iptNationality').val());
+                information.append('Genre', $('#iptGenre').val());
+                information.append('Phone', $('#iptPhone').val());
+                information.append('Email', $('#iptEmail').val());
+                information.append('Address', $('#iptAddress').val());
+
+                if ($('#sltRoles').val() !== 'ADMINISTRADOR') {
+
+                    information.append('ZoneAccess', $('#iptZoneAccess').val());
+                }
+
+                information.append('State', 'ACTIVO');
+
+                await registerEmployee(information, $('#sltPositions').val(), $('#iptCode').val(), $('#sltRoles').val());
+                await loadListEmployees();
+
+                clearInputs();
+            });
+
+            $('#btnUpdateEmployee').on('click', async function () {
+
+                // Validar DNI
+                if (!$("#ipttId").val()) {
+                    alert("Por favor, ingresa un DNI válido (solo números).");
+                    return;
+                }
+
+                // Validar Especialidad
+                if (!$("#slttSpecialties").val()) {
+                    alert("Por favor, selecciona una especialidad.");
+                    return;
+                }
+
+                // Validar Área
+                if (!$("#slttAreas").val()) {
+                    alert("Por favor, selecciona un área.");
+                    return;
+                }
+
+                // Validar Cargo
+                if (!$("#slttPositions").val()) {
+                    alert("Por favor, selecciona un cargo.");
+                    return;
+                }
+
+                // Validar Fecha de Entrada
+                if (!$("#ipttDateEntry").val()) {
+                    alert("Por favor, ingresa una fecha de entrada.");
+                    return;
+                }
+
+                // Validar Tipo de Documento
+                if (!$("#ipttTypeDocument").val()) {
+                    alert("Por favor, ingresa el tipo de documento.");
+                    return;
+                }
+
+                // Validar Nombres
+                if (!$("#ipttFirstName").val()) {
+                    alert("Por favor, ingresa los nombres.");
+                    return;
+                }
+
+                // Validar Apellidos
+                if (!$("#ipttLastName").val()) {
+                    alert("Por favor, ingresa los apellidos.");
+                    return;
+                }
+
+                // Validar Fecha de Nacimiento
+                if (!$("#ipttBirthdate").val()) {
+                    alert("Por favor, ingresa la fecha de nacimiento.");
+                    return;
+                }
+
+                // Validar Nacionalidad
+                if (!$("#ipttNationality").val()) {
+                    alert("Por favor, ingresa la nacionalidad.");
+                    return;
+                }
+
+                // Validar Teléfono
+                if (!$("#ipttPhone").val()) {
+                    alert("Por favor, ingresa un teléfono válido.");
+                    return;
+                }
+
+                // Validar Email
+                if (!$("#ipttEmail").val()) {
+                    alert("Por favor, ingresa un correo electrónico válido.");
+                    return;
+                }
+
+                // Validar Dirección
+                if (!$("#ipttAddress").val()) {
+                    alert("Por favor, ingresa la dirección.");
+                    return;
+                }
+
+                // Validar Zonas de Acceso
+                if ($("#ipttRole").val() === 'TRABAJADOR') {
+                    if (!$("#ipttZoneAccess").val()) {
+                        alert("Por favor, ingresa las zonas de acceso.");
+                        return;
+                    }
+                }
+
+                var information = new FormData();
+
+                information.append('Id', $('#ipttId').val());
+                information.append('SpecialtiesId', $('#slttSpecialties').val());
+                information.append('DateEntry', $('#ipttDateEntry').val());
+                information.append('TypeDocument', $('#ipttTypeDocument').val());
+                information.append('Firstname', $('#ipttFirstName').val());
+                information.append('Lastname', $('#ipttLastName').val());
+                information.append('Birthdate', $('#ipttBirthdate').val());
+                information.append('Nationality', $('#ipttNationality').val());
+                information.append('Genre', $('#ipttGenre').val());
+                information.append('Phone', $('#ipttPhone').val());
+                information.append('Email', $('#ipttEmail').val());
+                information.append('Address', $('#ipttAddress').val());
+
+                if ($('#slttRoles').val() !== 'ADMINISTRADOR') {
+
+                    information.append('ZoneAccess', $('#ipttZoneAccess').val());
+                }
+
+                information.append('State', 'ACTIVO');
+
+                await updateEmployee(information, $('#slttPositions').val(), $('#ipttRole').val());
+                await loadListEmployees();
+            });
+
+            $('#tblEmployees').on('click', '#btnEditEmployee', async function () {
+
+                var table = $('#tblEmployees').DataTable();
+
+                var rowData = table.row($(this).closest('tr')).data();
+
+                var filteredEmployees = employees.find(e => e.Id === rowData.Id);
+
+                if (filteredEmployees.Role === 'ADMINISTRADOR') {
+
+                    $('#ipttZoneAccess').prop('readonly', true);
+                }else{
+                    $('#ipttZoneAccess').prop('readonly', false);
+                }
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("LoadPositions", "Admins")' + `?areasId=${filteredEmployees.AreaId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        var contentHtml = '';
+
+                        data.forEach(item => {
+                            const isSelected = item.Id === filteredEmployees.PositionId ? 'selected' : '';
+                            contentHtml += `<option value="${item.Id}" ${isSelected}>${item.Name}</option>`;
+                        });
+
+                        $('#slttPositions').html(contentHtml);
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', '_self');
+                    }
+                });
+                console.log(filteredEmployees.Id);
+                $('#ipttRole').val(filteredEmployees.Role);
+                $('#ipttId').val(filteredEmployees.Id);
+                $('#slttSpecialties').val(filteredEmployees.SpecialtyId);
+                $('#slttAreas').val(filteredEmployees.AreaId);
+                $('#ipttDateEntry').val(filteredEmployees.DateEntry);
+                $('#ipttTypeDocument').val(filteredEmployees.TypeDocument);
+                $('#ipttFirstName').val(filteredEmployees.Firstname);
+                $('#ipttLastName').val(filteredEmployees.Lastname);
+                $('#ipttBirthdate').val(filteredEmployees.Birthdate);
+                $('#ipttNationality').val(filteredEmployees.Nationality);
+                $('#ipttGenre').val(filteredEmployees.Genre);
+                $('#ipttPhone').val(filteredEmployees.Phone);
+                $('#ipttEmail').val(filteredEmployees.Email);
+                $('#ipttAddress').val(filteredEmployees.Address);
+                $('#ipttZoneAccess').val(filteredEmployees.ZoneAccess);
+            });
+
+            $('#tblEmployees').on('click', '#btnDeleteEmployee', async function () {
+
+                var table = $('#tblEmployees').DataTable();
+
+                var rowData = table.row($(this).closest('tr')).data();
+
+                Swal.fire({
+                  title: "Estas seguro de eliminar el registro?",
+                  text: "Esta operacion es irreversible!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Si, eliminar!"
+                })
+                .then(async (result) => {
+
+                    if (result.isConfirmed) {
+
+                        await deleteEmployee(rowData.Id, rowData.Role);
+                        await loadListEmployees();
+
+                        Swal.fire({
+                            title: "Eliminado!",
+                            text: "El registro se elimino correctamente.",
+                            icon: "success"
+                        });
+                    }
+                });
+            });
+
+            $('#tblEmployees').on('click', '#btnViewEmployee', function () {
+
+                var table = $('#tblEmployees').DataTable();
+
+                var rowData = table.row($(this).closest('tr')).data();
+
+                var filteredEmployees = employees.find(e => e.Id === rowData.Id);
+
+                $('#iptttRole').val(filteredEmployees.Role);
+                $('#iptttId').val(filteredEmployees.Id);
+                $('#iptttSpecialty').val(filteredEmployees.Specialty);
+                $('#iptttDateEntry').val(filteredEmployees.DateEntry);
+                $('#iptttTypeDocument').val(filteredEmployees.TypeDocument);
+                $('#iptttFirstName').val(filteredEmployees.Firstname);
+                $('#iptttLastName').val(filteredEmployees.Lastname);
+                $('#iptttBirthdate').val(filteredEmployees.Birthdate);
+                $('#iptttNationality').val(filteredEmployees.Nationality);
+                $('#iptttGenre').val(filteredEmployees.Genre);
+                $('#iptttPhone').val(filteredEmployees.Phone);
+                $('#iptttEmail').val(filteredEmployees.Email);
+                $('#iptttAddress').val(filteredEmployees.Address);
+                $('#iptttZoneAccess').val(filteredEmployees.ZoneAccess);
+            });
+
+            async function loadListEmployees() {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("LoadListEmployees", "Admins")',
+                        method: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+
+                    employees = data;
+
+                    fillTableEmployees(employees);
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            async function registerEmployee(information, positionId, pwd, role) {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("RegisterPerson", "Admins")' + `?positionId=${positionId}&pwd=${pwd}&role=${role}`,
+                        method: 'POST',
+                        data: information,
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+
+                    if (data === 'ELIMINADO') {
+
+                        Swal.fire({
+                          title: "El usuario se encuentra registrado",
+                          text: "El usuario que intenta registrar ya se encuentra registrado desea volver a habilitarlo?",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#3085d6",
+                          cancelButtonColor: "#d33",
+                          confirmButtonText: "Si, habibilitarlo!"
+                        })
+                        .then(async (result) => {
+
+                            if (result.isConfirmed) {
+
+                                await updatePersonState(information, role);
+                                await loadListEmployees();
+
+                                Swal.fire({
+                                    title: "Actualizado!",
+                                    text: "El estado del trabajor se actualizo correctamente.",
+                                    icon: "success"
+                                });
+                            }
+                        });
+
+                        return;
+                    }
+
+                    if (data === true) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Trabajador registrado!',
+                            text: 'El registro del trabajador se ha realizado correctamente.'
+                        });
+
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al registrar trabajador!',
+                            text: 'Se produjo un error al registrar al trabajador.'
+                        });
+                    }
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            async function updatePersonState(information, role) {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("UpdatePersonState", "Admins")' + `?role=${role}`,
+                        method: 'POST',
+                        data: information,
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+
+                    if (data === true) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Trabajador actualizado!',
+                            text: 'La actualizacion del trabajador se ha realizado correctamente.'
+                        });
+
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al actualizar trabajador!',
+                            text: 'Se produjo un error al actualizar al trabajador.'
+                        });
+                    }
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            async function updateEmployee(information, positionId, role) {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("UpdatePerson", "Admins")' + `?positionId=${positionId}&role=${role}`,
+                        method: 'POST',
+                        data: information,
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+
+                    if (data === true) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Trabajador actualizado!',
+                            text: 'La actualizacion del trabajador se ha realizado correctamente.'
+                        });
+
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al actualizar trabajador!',
+                            text: 'Se produjo un error al actualizar al trabajador.'
+                        });
+                    }
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            async function deleteEmployee(id, role) {
+
+                try {
+
+                    var data = await jQuery.ajax({
+
+                        url: '@Url.Action("DeletePerson", "Admins")' + `?id=${id}&role=${role}`,
+                        method: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+
+                    if (data === true) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Trabajador eliminado!',
+                            text: 'La eliminacion del trabajador se ha realizado correctamente.'
+                        });
+
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al eliminar trabajador!',
+                            text: 'Se produjo un error al eliminar al trabajador.'
+                        });
+                    }
+
+                } catch (error) {
+
+                    window.open('@Url.Action("Error", "Home")', '_self');
+                }
+            }
+
+            function loadSpecialties() {
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("LoadSpecialties", "Admins")',
+                    method: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        var contentHtml = '<option value="" disabled selected>SELECCIONE UNA OPCIÓN</option>';
+
+                        for (const item of data) {
+
+                            contentHtml += `<option value="${item.Id}">${item.Name}</option>`;
+                        }
+
+                        $('#sltSpecialties').html(contentHtml);
+                        $('#slttSpecialties').html(contentHtml);
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', '_self');
+                    }
+                });
+            }
+
+            function loadAreas() {
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("LoadAreas", "Admins")',
+                    method: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        var contentHtml = '<option value="" disabled selected>SELECCIONE UNA OPCIÓN</option>';
+
+                        for (const item of data) {
+
+                            contentHtml += `<option value="${item.Id}">${item.Name}</option>`;
+                        }
+
+                        $('#sltAreas').html(contentHtml);
+                        $('#slttAreas').html(contentHtml);
+                    },
+                    error: function () {
+
+                        window.open('@Url.Action("Error", "Home")', '_self');
+                    }
+                });
+            }
+
+            function fillTableEmployees(listEmployees) {
+
+                if (listEmployees.length === 0) {
+
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No se encontraron resultados!',
+                        text: 'No existen datos.'
+                    });
+
+                    return;
+                }
+
+                var columns = [];
+
+                columns = [
+                    { data: 'Role', title: 'Rol' },
+                    { data: 'Id', title: 'Id' },
+                    { data: 'Firstname', title: 'Nombre' },
+                    { data: 'Lastname', title: 'Apellido' },
+                    { data: 'Area', title: 'Area' },
+                    { data: 'Position', title: 'Cargo' },
+                    { data: 'Specialty', title: 'Especialidad' }
+                ];
+
+                columns.push({
+                    data: null,
+                    title: 'Editar',
+                    render: function (data, type, row) {
+
+                        return `
+                            <button id="btnEditEmployee" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#mdlEditEmployee">
+                                <i class="fas fa-edit"></i>
+                            </button>`;
+                    }
+                });
+
+                columns.push({
+                    data: null,
+                    title: 'Eliminar',
+                    render: function (data, type, row) {
+
+                        return `
+                            <button id="btnDeleteEmployee" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>`;
+                    }
+                });
+
+                columns.push({
+                    data: null,
+                    title: 'Ver',
+                    render: function (data, type, row) {
+
+                        return `
+                            <button id="btnViewEmployee" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mdlViewEmployee">
+                                <i class="fas fa-eye"></i>
+                            </button>`;
+                    }
+                });
+
+
+                if ($.fn.DataTable.isDataTable('#tblEmployees')) {
+
+                    $('#tblEmployees').DataTable().clear().destroy();
+                }
+
+                $('#tblEmployees').DataTable({
+                    data: listEmployees,
+                    columns: columns,
+                    searching: true,
+                    paging: true,
+                    ordering: true,
+                    responsive: true
+                });
+            }
+
+            function getDateTime() {
+
+                const date = new Date();
+
+                const day = date.getDate();
+                const mounth = date.getMonth() + 1;
+                const year = date.getFullYear();
+                const hour = date.getHours();
+                const minutes = date.getMinutes();
+
+                return `${day}/${mounth}/${year} ${hour}:${minutes}`;
+            }
+
+            function getFormattedDate(date) {
+
+                let day = String(date.getDate()).padStart(2, '0');
+                let mounth = String(date.getMonth() + 1).padStart(2, '0');
+                let year = date.getFullYear();
+                let hour = String(date.getHours()).padStart(2, '0');
+                let minutes = String(date.getMinutes()).padStart(2, '0');
+
+                return `${day}/${mounth}/${year} ${hour}:${minutes}`;
+            }
+
+            function clearInputs() {
+
+                $("#iptId").val('');
+                $("#iptDateEntry").val('');
+                $("#iptTypeDocument").val('');
+                $("#iptFirstName").val('');
+                $("#iptLastName").val('');
+                $("#iptBirthdate").val('');
+                $("#iptNationality").val('');
+                $("#iptPhone").val('');
+                $("#iptEmail").val('');
+                $("#iptAddress").val('');
+                $("#iptZoneAccess").val('');
+                $("#iptCode").val('');
+            }
+        });
+
+    </script>
+}
