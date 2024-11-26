@@ -229,6 +229,50 @@ namespace SmartAssistance.Controllers
                 (result), "application/json");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LoadListEmployees()
+        {
+            var result = await (
+                from em in context.Set<Employee>()
+                join ro in context.Set<Role>()
+                on em.RolesId equals ro.Id
+                join es in context.Set<Specialty>()
+                on em.SpecialtiesId equals es.Id
+                join an in context.Set<Assign>()
+                on em.Id equals an.EmployeesId
+                join po in context.Set<Position>()
+                on an.PositionsId equals po.Id
+                join ar in context.Set<Area>()
+                on po.AreasId equals ar.Id
+                where em.State == "ACTIVO"
+                select new
+                {
+                    em.Id,
+                    em.DateEntry,
+                    em.TypeDocument,
+                    em.Firstname,
+                    em.Lastname,
+                    em.Birthdate,
+                    em.Nationality,
+                    em.Genre,
+                    em.Phone,
+                    em.Email,
+                    em.Address,
+                    em.ZoneAccess,
+                    Area = ar.Name ?? string.Empty,
+                    Position = po.Name,
+                    Specialty = es.Name,
+                    SpecialtyId = es.Id,
+                    AreaId = ar.Id,
+                    PositionId = po.Id,
+                    Role = ro.Name
+                }
+            ).ToListAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
         #endregion
 
         #region Cookie
