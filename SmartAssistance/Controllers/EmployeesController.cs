@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SmartAssistance.Models;
 using System.Security.Claims;
 
@@ -10,8 +11,40 @@ namespace SmartAssistance.Controllers
     {
         private ClaimsPrincipal? _claimsPrincipal;
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> InterfaceEmployee()
         {
+            ViewBag.Profile = await
+                (from em in context.Set<Employee>()
+                 join es in context.Set<Specialty>()
+                 on em.SpecialtiesId equals es.Id
+                 join an in context.Set<Assign>()
+                 on em.Id equals an.EmployeesId
+                 join po in context.Set<Position>()
+                 on an.PositionsId equals po.Id
+                 join ar in context.Set<Area>()
+                 on po.AreasId equals ar.Id
+                 where em.Id == GetPersonId()
+                 select new
+                 {
+                     em.Id,
+                     em.DateEntry,
+                     em.TypeDocument,
+                     em.Firstname,
+                     em.Lastname,
+                     em.Birthdate,
+                     em.Nationality,
+                     em.Genre,
+                     em.Phone,
+                     em.Email,
+                     em.Address,
+                     em.ZoneAccess,
+                     Area = ar.Name,
+                     Position = po.Name,
+                     Specialty = es.Name,
+                 }
+                ).FirstOrDefaultAsync();
+
             return View();
         }
 
