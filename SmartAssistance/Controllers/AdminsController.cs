@@ -56,6 +56,9 @@ namespace SmartAssistance.Controllers
         public IActionResult AttendanceList() => View();
 
         [HttpGet]
+        public IActionResult AttendanceEmployees() => View();
+
+        [HttpGet]
         public IActionResult Maintenance() => View();
 
         #endregion
