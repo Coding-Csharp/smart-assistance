@@ -325,6 +325,36 @@ namespace SmartAssistance.Controllers
                 (result), "application/json");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SearchAttendanceByDateAndName
+            (Assist assist)
+        {
+            var result = await (
+                from at in context.Set<Assist>()
+                join em in context.Set<Employee>()
+                on at.EmployeesId equals em.Id
+                where at.CheckIn.HasValue && at.CheckOut.HasValue &&
+                      at.CheckIn.Value.Date >= assist.CheckIn.Value.Date &&
+                      at.CheckOut.Value.Date <= assist.CheckOut.Value.Date
+                select new
+                {
+                    at.Id,
+                    em.Firstname,
+                    em.Lastname,
+                    at.CheckIn.Value.Date,
+                    at.CheckIn,
+                    at.CheckOut,
+                    at.MinuteLate,
+                    WorkedTime = at.CheckOut.HasValue && at.CheckIn.HasValue
+                        ? (at.CheckOut.Value - at.CheckIn.Value).ToString(@"hh\:mm")
+                        : "00:00",
+                    at.EmotionalState
+                }).ToListAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
         #endregion
 
         #region Cookie
