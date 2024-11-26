@@ -158,13 +158,10 @@ namespace SmartAssistance.Controllers
             {
                 if (assist.CheckIn.HasValue && assist.CheckOut.HasValue &&
                     assist.CheckIn.Value.Date == today && assist.CheckOut.Value.Date == today)
-                {
                     validation = "BLOQUEADO";
-                }
+
                 else if (assist.CheckIn.HasValue && assist.CheckIn.Value.Date == today)
-                {
                     validation = "SALIDA";
-                }
             }
 
             return Content(JsonConvert.SerializeObject
@@ -450,8 +447,8 @@ namespace SmartAssistance.Controllers
                 join em in context.Set<Employee>()
                 on at.EmployeesId equals em.Id
                 where at.CheckIn.HasValue && at.CheckOut.HasValue &&
-                      at.CheckIn.Value.Date >= assist.CheckIn.Value.Date &&
-                      at.CheckOut.Value.Date <= assist.CheckOut.Value.Date
+                at.CheckIn.Value.Date >= assist.CheckIn.Value.Date &&
+                at.CheckOut.Value.Date <= assist.CheckOut.Value.Date
                 select new
                 {
                     at.Id,
