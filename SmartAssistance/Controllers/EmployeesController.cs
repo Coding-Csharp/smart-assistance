@@ -53,6 +53,39 @@ namespace SmartAssistance.Controllers
         public IActionResult AttendanceList() => View();
 
         [HttpGet]
+        public async Task<IActionResult> LoadListAttendances()
+        {
+            var currentDate = DateTime.Now;
+
+            var result = await
+                (from at in context.Set<Assist>()
+                 join em in context.Set<Employee>()
+                 on at.EmployeesId equals em.Id
+                 where em.Id == GetPersonId()
+                 && at.CheckIn.HasValue
+                 && at.CheckIn.Value.Month == currentDate.Month
+                 && at.CheckIn.Value.Year == currentDate.Year
+                 select new
+                 {
+                     at.Id,
+                     em.Firstname,
+                     em.Lastname,
+                     at.CheckIn.Value.Date,
+                     at.CheckIn,
+                     at.CheckOut,
+                     at.MinuteLate,
+                     at.EmotionalState,
+                     WorkedTime = at.CheckOut.HasValue && at.CheckIn.HasValue
+                        ? (at.CheckOut.Value - at.CheckIn.Value).ToString(@"hh\:mm")
+                        : "00:00"
+                 }
+                ).ToListAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ValidateAttendanceToday()
         {
             DateTime today = DateTime.Now.Date;
@@ -132,7 +165,6 @@ namespace SmartAssistance.Controllers
             return Content(JsonConvert.SerializeObject
                 (result), "application/json");
         }
-
 
         private string GetPersonId()
         {
