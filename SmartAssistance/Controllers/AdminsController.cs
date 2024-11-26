@@ -375,6 +375,18 @@ namespace SmartAssistance.Controllers
                 (true), "application/json");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeletePerson
+            ([FromQuery] string id)
+        {
+            await context.Set<Employee>().Where(a => a.Id == id)
+                .ExecuteUpdateAsync(a => a
+                .SetProperty(u => u.State, "ELIMINADO"));
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdatePersonState
             (Employee employee)
