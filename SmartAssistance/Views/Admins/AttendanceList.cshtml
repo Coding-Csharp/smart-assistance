@@ -348,14 +348,17 @@
                 for (var i = 0; i < listAttendances.length; ++i) {
 
                     var date = new Date(listAttendances[i].Date);
+
                     listAttendances[i].Date = getFormattedDate(date);
 
                     var checkInDate = new Date(listAttendances[i].CheckIn);
+
                     listAttendances[i].CheckIn = getFormattedTime(checkInDate);
 
                     if (listAttendances[i].CheckOut !== null) {
 
                         var checkOutDate = new Date(listAttendances[i].CheckOut);
+
                         listAttendances[i].CheckOut = getFormattedTime(checkOutDate);
                     }
                     else {
@@ -365,6 +368,7 @@
                 }
 
                 $('#tblAttendances').DataTable({
+
                     data: listAttendances,
                     columns: columns,
                     searching: true,
