@@ -69,6 +69,15 @@ namespace SmartAssistance.Controllers
         #region Json
 
         [HttpGet]
+        public async Task<IActionResult> LoadSpecialties()
+        {
+            var result = await context.Set<Specialty>().ToListAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> LoadListAttendances()
         {
             var currentDate = DateTime.Now;
