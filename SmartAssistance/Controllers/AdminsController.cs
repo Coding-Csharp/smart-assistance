@@ -326,6 +326,19 @@ namespace SmartAssistance.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> UpdatePersonState
+            (Employee employee)
+        {
+            await context.Set<Employee>()
+                .Where(a => a.Id == employee.Id)
+                .ExecuteUpdateAsync(a => a
+                .SetProperty(u => u.State, "ACTIVO"));
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> SearchAttendanceByDateAndName
             (Assist assist)
         {
