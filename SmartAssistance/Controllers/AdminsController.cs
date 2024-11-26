@@ -97,6 +97,16 @@ namespace SmartAssistance.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> LoadPositionById(int positionId)
+        {
+            var result = await context.Set<Position>()
+                .Where(p => p.Id == positionId).FirstOrDefaultAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> LoadListAttendances()
         {
             var currentDate = DateTime.Now;
