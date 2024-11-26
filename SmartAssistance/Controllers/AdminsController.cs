@@ -213,11 +213,9 @@ namespace SmartAssistance.Controllers
                     a.CheckOut == null).FirstOrDefaultAsync();
 
                 if (assist != null)
-                {
                     result = await context.Set<Assist>().Where(a => a.Id == assist.Id)
                     .ExecuteUpdateAsync(a => a
                     .SetProperty(u => u.CheckOut, DateTime.Now)) > 0;
-                }
             }
 
             return Content(JsonConvert.SerializeObject
