@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using SmartAssistance.Models;
+using Newtonsoft.Json;
 
 namespace SmartAssistance.Controllers
 {
@@ -50,6 +51,33 @@ namespace SmartAssistance.Controllers
 
         [HttpGet]
         public IActionResult AttendanceList() => View();
+
+        [HttpGet]
+        public async Task<IActionResult> ValidateAttendanceToday()
+        {
+            DateTime today = DateTime.Now.Date;
+
+            string validation = "MARCAR";
+
+            var assistRecord = await context.Set<Assist>()
+                .Where(a => a.EmployeesId == GetPersonId() &&
+                (a.CheckIn.HasValue || a.CheckOut.HasValue) &&
+                (a.CheckIn.Value.Date == today || a.CheckOut.Value.Date == today))
+                .FirstOrDefaultAsync();
+
+            if (assistRecord != null)
+            {
+                if (assistRecord.CheckIn.HasValue && assistRecord.CheckOut.HasValue &&
+                    assistRecord.CheckIn.Value.Date == today && assistRecord.CheckOut.Value.Date == today)
+                    validation = "BLOQUEADO";
+
+                else if (assistRecord.CheckIn.HasValue && assistRecord.CheckIn.Value.Date == today)
+                    validation = "SALIDA";
+            }
+
+            return Content(JsonConvert.SerializeObject
+                (validation), "application/json");
+        }
 
         private string GetPersonId()
         {
