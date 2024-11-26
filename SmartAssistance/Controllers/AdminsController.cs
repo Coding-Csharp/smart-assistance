@@ -61,6 +61,9 @@ namespace SmartAssistance.Controllers
         [HttpGet]
         public IActionResult Maintenance() => View();
 
+        [HttpGet]
+        public IActionResult ReportAttendance() => View();
+
         #endregion
 
         #region Json
