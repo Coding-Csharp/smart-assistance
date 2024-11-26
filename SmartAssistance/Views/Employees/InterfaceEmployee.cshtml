@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Interfaz trabajador";
+    Layout = "~/Views/Shared/EmployeeLayout.cshtml";
+}
+
+<div class="container my-5">
+
+    <div class="text-center">
+        <img src="https://png.pngtree.com/background/20230330/original/pngtree-the-young-man-doctor-in-medical-concept-young-man-doctor-in-picture-image_2190626.jpg" alt="Foto de perfil" class="rounded-circle mb-3" width="150" height="150">
+        <h4 class="text-danger">@ViewBag.Profile.Id: @ViewBag.Profile.Firstname @ViewBag.Profile.Lastname</h4>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <p><strong>TIPO DE DOCUMENTO:</strong> @ViewBag.Profile.TypeDocument</p>
+            <p><strong>NÚMERO DE DOCUMENTO:</strong> @ViewBag.Profile.Id</p>
+            <p><strong>FECHA DE NACIMIENTO:</strong> @ViewBag.Profile.Birthdate</p>
+            <p><strong>NACIONALIDAD:</strong> @ViewBag.Profile.Nationality</p>
+            <p><strong>SEXO:</strong> @ViewBag.Profile.Genre</p>
+            <p><strong>EMAIL:</strong> @ViewBag.Profile.Email</p>
+            <p><strong>FECHA DE INGRESO:</strong> @ViewBag.Profile.DateEntry</p>
+        </div>
+
+        <div class="col-md-6">
+            <p><strong>TELEFONO:</strong> @ViewBag.Profile.Phone</p>
+            <p><strong>DIRECCION:</strong> @ViewBag.Profile.Address</p>
+            <p><strong>AREA:</strong> @ViewBag.Profile.Area</p>
+            <p><strong>CARGO:</strong> @ViewBag.Profile.Position</p>
+            <p><strong>ESPECIALIDAD:</strong> @ViewBag.Profile.Specialty</p>
+            <p><strong>ACCESO PERMITIDO:</strong> @ViewBag.Profile.ZoneAccess</p>
+        </div>
+    </div>
+
+</div>

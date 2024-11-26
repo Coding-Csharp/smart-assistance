@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartAssistance.Models;
 using System.Security.Claims;
+using SmartAssistance.Models;
 
 namespace SmartAssistance.Controllers
 {
