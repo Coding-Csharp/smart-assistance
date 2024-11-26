@@ -173,6 +173,39 @@ namespace SmartAssistance.Controllers
                 (result), "application/json");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LoadAllListAttendances()
+        {
+            var currentDate = DateTime.Now;
+
+            var result = await
+                (from at in context.Set<Assist>()
+                 join em in context.Set<Employee>()
+                 on at.EmployeesId equals em.Id
+                 where at.CheckIn.HasValue
+                 && at.CheckIn.Value.Month == currentDate.Month
+                 && at.CheckIn.Value.Year == currentDate.Year
+                 && em.State == "ACTIVO"
+                 select new
+                 {
+                     at.Id,
+                     em.Firstname,
+                     em.Lastname,
+                     at.CheckIn.Value.Date,
+                     at.CheckIn,
+                     at.CheckOut,
+                     at.MinuteLate,
+                     WorkedTime = at.CheckOut.HasValue && at.CheckIn.HasValue
+                        ? (at.CheckOut.Value - at.CheckIn.Value).ToString(@"hh\:mm")
+                        : "00:00",
+                     at.EmotionalState
+                 }
+                ).ToListAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (result), "application/json");
+        }
+
         #endregion
 
         #region Cookie
