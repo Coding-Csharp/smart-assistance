@@ -237,6 +237,7 @@ namespace SmartAssistance.Controllers
                  join em in context.Set<Employee>()
                  on at.EmployeesId equals em.Id
                  where at.CheckIn.HasValue
+                 && at.EmployeesId != GetPersonId()
                  && at.CheckIn.Value.Month == currentDate.Month
                  && at.CheckIn.Value.Year == currentDate.Year
                  && em.State == "ACTIVO"
@@ -261,26 +262,66 @@ namespace SmartAssistance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadListAttendancesByPersonId
-            (string personId)
+        public async Task<IActionResult> LoadEmployeeByAttendanceId
+            (int attendanceId)
         {
             var result = await
-                 (from at in context.Set<Assist>()
-                  where at.EmployeesId == personId
-                  select new
-                  {
-                      at.Id,
-                      at.CheckIn.Value.Date,
-                      at.CheckIn,
-                      at.CheckOut,
-                      at.MinuteLate,
-                      WorkedTime = at.CheckOut.HasValue && at.CheckIn.HasValue
-                        ? (at.CheckOut.Value - at.CheckIn.Value).ToString(@"hh\:mm")
-                        : "00:00"
-                  }).ToListAsync();
+                (from at in context.Set<Assist>()
+                 join em in context.Set<Employee>()
+                 on at.EmployeesId equals em.Id
+                 join es in context.Set<Specialty>()
+                 on em.SpecialtiesId equals es.Id
+                 where at.Id == attendanceId &&
+                 em.State == "ACTIVO"
+                 select new
+                 {
+                     em.Id,
+                     em.DateEntry,
+                     em.TypeDocument,
+                     em.Firstname,
+                     em.Lastname,
+                     em.Birthdate,
+                     em.Nationality,
+                     em.Genre,
+                     em.Phone,
+                     em.Email,
+                     em.Address,
+                     em.ZoneAccess,
+                     Specialty = es.Name
+                 }
+                ).FirstOrDefaultAsync();
 
             return Content(JsonConvert.SerializeObject
                 (result), "application/json");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAssist
+            (Assist assist)
+        {
+            await context.Set<Assist>()
+                .Where(a => a.Id == assist.Id)
+                .ExecuteUpdateAsync(a => a
+                .SetProperty(u => u.CheckIn, assist.CheckIn)
+                .SetProperty(u => u.CheckOut, assist.CheckOut));
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteAssist
+            (int id)
+        {
+            var assist = await context.Set<Assist>()
+                .Where(a => a.Id == id).FirstOrDefaultAsync();
+
+            context.Set<Assist>().Remove(assist);
+
+            await context.SaveChangesAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
         }
 
         [HttpGet]
