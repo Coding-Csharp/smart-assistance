@@ -357,6 +357,7 @@ namespace SmartAssistance.Controllers
                     SpecialtyId = es.Id,
                     AreaId = ar.Id,
                     PositionId = po.Id,
+                    RoleId = ro.Id,
                     Role = ro.Name
                 }
             ).ToListAsync();

@@ -172,8 +172,8 @@
                         <label>Rol:</label>
                         <select id="sltRoles" class="form-control" required>
                             <option selected>SELECCIONE UNA OPCION</option>
-                            <option>ADMINISTRADOR</option>
-                            <option>TRABAJADOR</option>
+                            <option value="1">ADMINISTRADOR</option>
+                            <option value="2">TRABAJADOR</option>
                         </select>
 
                         <label>DNI:</label>
@@ -257,6 +257,8 @@
             <div class="modal-body">
                 <div>
                     <div class="box">
+
+                        <input id="ipttRoleId" type="hidden" class="form-control" readonly>
 
                         <label>Rol:</label>
                         <input id="ipttRole" class="form-control" readonly>
@@ -415,25 +417,13 @@
 
             $('#sltRoles').on('change', function () {
 
-                if ($(this).val() === 'ADMINISTRADOR') {
+                if ($(this).val() === '1') {
 
                     $('#iptZoneAccess').attr('readonly', true);
 
                 } else {
 
                     $('#iptZoneAccess').attr('readonly', false);
-                }
-            });
-
-            $('#slttRoles').on('change', function () {
-
-                if ($(this).val() === 'ADMINISTRADOR') {
-
-                    $('#ipttZoneAccess').attr('readonly', true);
-
-                } else {
-
-                    $('#ipttZoneAccess').attr('readonly', false);
                 }
             });
 
@@ -620,6 +610,8 @@
                 var information = new FormData();
 
                 information.append('Id', $('#iptId').val());
+                information.append('UrlImage', 'VACIO');
+                information.append('RolesId', $('#sltRoles').val());
                 information.append('SpecialtiesId', $('#sltSpecialties').val());
                 information.append('DateEntry', $('#iptDateEntry').val());
                 information.append('TypeDocument', $('#iptTypeDocument').val());
@@ -632,14 +624,14 @@
                 information.append('Email', $('#iptEmail').val());
                 information.append('Address', $('#iptAddress').val());
 
-                if ($('#sltRoles').val() !== 'ADMINISTRADOR') {
+                if ($('#sltRoles').val() !== '1') {
 
                     information.append('ZoneAccess', $('#iptZoneAccess').val());
                 }
 
                 information.append('State', 'ACTIVO');
 
-                await registerEmployee(information, $('#sltPositions').val(), $('#iptCode').val(), $('#sltRoles').val());
+                await registerEmployee(information, $('#sltPositions').val(), $('#iptCode').val());
                 await loadListEmployees();
 
                 clearInputs();
@@ -751,6 +743,8 @@
                 var information = new FormData();
 
                 information.append('Id', $('#ipttId').val());
+                information.append('UrlImage', 'VACIO');
+                information.append('RolesId', $('#ipttRoleId').val());
                 information.append('SpecialtiesId', $('#slttSpecialties').val());
                 information.append('DateEntry', $('#ipttDateEntry').val());
                 information.append('TypeDocument', $('#ipttTypeDocument').val());
@@ -763,14 +757,14 @@
                 information.append('Email', $('#ipttEmail').val());
                 information.append('Address', $('#ipttAddress').val());
 
-                if ($('#slttRoles').val() !== 'ADMINISTRADOR') {
+                if ($('#ipttRole').val() !== 'ADMINISTRADOR') {
 
                     information.append('ZoneAccess', $('#ipttZoneAccess').val());
                 }
 
                 information.append('State', 'ACTIVO');
 
-                await updateEmployee(information, $('#slttPositions').val(), $('#ipttRole').val());
+                await updateEmployee(information, $('#slttPositions').val());
                 await loadListEmployees();
             });
 
@@ -786,7 +780,7 @@
 
                     $('#ipttZoneAccess').prop('readonly', true);
 
-                }else{
+                } else{
 
                     $('#ipttZoneAccess').prop('readonly', false);
                 }
@@ -814,6 +808,7 @@
                     }
                 });
 
+                $('#ipttRoleId').val(filteredEmployees.RoleId);
                 $('#ipttRole').val(filteredEmployees.Role);
                 $('#ipttId').val(filteredEmployees.Id);
                 $('#slttSpecialties').val(filteredEmployees.SpecialtyId);
@@ -908,7 +903,7 @@
                 }
             }
 
-            async function registerEmployee(information, positionId, pwd, role) {
+            async function registerEmployee(information, positionId, pwd) {
 
                 try {
 
@@ -937,7 +932,7 @@
 
                             if (result.isConfirmed) {
 
-                                await updatePersonState(information, role);
+                                await updatePersonState(information);
                                 await loadListEmployees();
 
                                 Swal.fire({
@@ -974,7 +969,7 @@
                 }
             }
 
-            async function updatePersonState(information, role) {
+            async function updatePersonState(information) {
 
                 try {
 
@@ -1011,7 +1006,7 @@
                 }
             }
 
-            async function updateEmployee(information, positionId, role) {
+            async function updateEmployee(information, positionId) {
 
                 try {
 
@@ -1048,7 +1043,7 @@
                 }
             }
 
-            async function deleteEmployee(id, role) {
+            async function deleteEmployee(id) {
 
                 try {
 
