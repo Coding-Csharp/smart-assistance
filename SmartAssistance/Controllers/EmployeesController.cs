@@ -12,6 +12,8 @@ namespace SmartAssistance.Controllers
     {
         private ClaimsPrincipal? _claimsPrincipal;
 
+        #region Views
+
         [HttpGet]
         public async Task<IActionResult> InterfaceEmployee()
         {
@@ -51,6 +53,10 @@ namespace SmartAssistance.Controllers
 
         [HttpGet]
         public IActionResult AttendanceList() => View();
+
+        #endregion
+
+        #region Json
 
         [HttpGet]
         public async Task<IActionResult> LoadListAttendances()
@@ -166,6 +172,10 @@ namespace SmartAssistance.Controllers
                 (result), "application/json");
         }
 
+        #endregion
+
+        #region Cookie
+
         private string GetPersonId()
         {
             _claimsPrincipal = HttpContext.User;
@@ -174,5 +184,7 @@ namespace SmartAssistance.Controllers
                 .FindFirst(ClaimTypes.Name)?
                 .Value.ToString() ?? string.Empty;
         }
+
+        #endregion
     }
 }
