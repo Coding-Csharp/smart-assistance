@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Reporting.NETCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using SmartAssistance.Models;
-using Microsoft.Reporting.NETCore;
+using SmartAssistance.Models.Reports;
 
 namespace SmartAssistance.Controllers
 {
