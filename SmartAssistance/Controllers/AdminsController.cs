@@ -328,6 +328,39 @@ namespace SmartAssistance.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> RegisterPerson
+            (Employee employee, [FromQuery] string positionId, [FromQuery] string pwd)
+        {
+            var result = await context.Set<Employee>()
+                .Where(e => e.Id == employee.Id &&
+                e.State == "ELIMINADO")
+                .FirstOrDefaultAsync();
+
+            if (result is not null)
+                return Content(JsonConvert.SerializeObject
+                    ("ELIMINADO"), "application/json");
+
+            await context.Set<Employee>().AddAsync(employee);
+
+            await context.SaveChangesAsync();
+
+            await context.Set<Assign>().AddAsync
+                (new(employee.Id, int.Parse(positionId)));
+
+            await context.SaveChangesAsync();
+
+            await context.Set<EmployeeCredential>().AddAsync
+                (new(employee.Id, pwd));
+
+            await context.SaveChangesAsync();
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
+        }
+
+
+
+        [HttpPost]
         public async Task<IActionResult> UpdatePersonState
             (Employee employee)
         {
