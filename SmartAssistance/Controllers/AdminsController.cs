@@ -52,6 +52,9 @@ namespace SmartAssistance.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult AttendanceList() => View();
+
         #endregion
 
         #region Json
