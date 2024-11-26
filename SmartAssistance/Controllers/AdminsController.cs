@@ -87,7 +87,8 @@ namespace SmartAssistance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadPositions(int areasId)
+        public async Task<IActionResult> LoadPositions
+            (int areasId)
         {
             var result = await context.Set<Position>()
                 .Where(p => p.AreasId == areasId).ToListAsync();
@@ -97,7 +98,8 @@ namespace SmartAssistance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadPositionById(int positionId)
+        public async Task<IActionResult> LoadPositionById
+            (int positionId)
         {
             var result = await context.Set<Position>()
                 .Where(p => p.Id == positionId).FirstOrDefaultAsync();

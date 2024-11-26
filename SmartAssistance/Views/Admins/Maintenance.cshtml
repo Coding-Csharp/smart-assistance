@@ -495,107 +495,125 @@
 
             $('#btnRegisterNewEmployee').on('click', async function () {
 
-                // Validar Rol
                 if ($("#sltRoles").val() === "SELECCIONE UNA OPCION") {
+
                     alert("Por favor, selecciona un rol válido.");
+
                     return;
                 }
 
-                // Validar DNI
                 if (!$("#iptId").val()) {
+
                     alert("Por favor, ingresa un DNI válido (solo números).");
+
                     return;
                 }
 
-                // Validar Especialidad
                 if (!$("#sltSpecialties").val()) {
+
                     alert("Por favor, selecciona una especialidad.");
+
                     return;
                 }
 
-                // Validar Área
                 if (!$("#sltAreas").val()) {
+
                     alert("Por favor, selecciona un área.");
+
                     return;
                 }
 
-                // Validar Cargo
                 if (!$("#sltPositions").val()) {
+
                     alert("Por favor, selecciona un cargo.");
+
                     return;
                 }
 
-                // Validar Fecha de Entrada
                 if (!$("#iptDateEntry").val()) {
+
                     alert("Por favor, ingresa una fecha de entrada.");
+
                     return;
                 }
 
-                // Validar Tipo de Documento
                 if (!$("#iptTypeDocument").val()) {
+
                     alert("Por favor, ingresa el tipo de documento.");
+
                     return;
                 }
 
-                // Validar Nombres
                 if (!$("#iptFirstName").val()) {
+
                     alert("Por favor, ingresa los nombres.");
+
                     return;
                 }
 
-                // Validar Apellidos
                 if (!$("#iptLastName").val()) {
+
                     alert("Por favor, ingresa los apellidos.");
+
                     return;
                 }
 
-                // Validar Fecha de Nacimiento
                 if (!$("#iptBirthdate").val()) {
+
                     alert("Por favor, ingresa la fecha de nacimiento.");
+
                     return;
                 }
 
-                // Validar Nacionalidad
                 if (!$("#iptNationality").val()) {
+
                     alert("Por favor, ingresa la nacionalidad.");
+
                     return;
                 }
 
-                // Validar Género
                 if ($("#iptGenre").val() === "SELECCIONE UNA OPCION") {
+
                     alert("Por favor, selecciona un género.");
+
                     return;
                 }
 
-                // Validar Teléfono
                 if (!$("#iptPhone").val()) {
+
                     alert("Por favor, ingresa un teléfono válido.");
+
                     return;
                 }
 
-                // Validar Email
                 if (!$("#iptEmail").val()) {
+
                     alert("Por favor, ingresa un correo electrónico válido.");
+
                     return;
                 }
 
-                // Validar Dirección
                 if (!$("#iptAddress").val()) {
+
                     alert("Por favor, ingresa la dirección.");
+
                     return;
                 }
 
-                // Validar Zonas de Acceso
                 if ($("#sltRoles").val() === 'TRABAJADOR') {
+
                     if (!$("#iptZoneAccess").val()) {
+
                         alert("Por favor, ingresa las zonas de acceso.");
+
                         return;
                     }
                 }
 
-                // Validar Contraseña
                 if (!$("#iptCode").val()) {
+
                     alert("Por favor, ingresa la contraseña.");
+
                     return;
                 }
 
@@ -629,88 +647,103 @@
 
             $('#btnUpdateEmployee').on('click', async function () {
 
-                // Validar DNI
                 if (!$("#ipttId").val()) {
+
                     alert("Por favor, ingresa un DNI válido (solo números).");
+
                     return;
                 }
 
-                // Validar Especialidad
                 if (!$("#slttSpecialties").val()) {
+
                     alert("Por favor, selecciona una especialidad.");
+
                     return;
                 }
 
-                // Validar Área
                 if (!$("#slttAreas").val()) {
+
                     alert("Por favor, selecciona un área.");
+
                     return;
                 }
 
-                // Validar Cargo
                 if (!$("#slttPositions").val()) {
+
                     alert("Por favor, selecciona un cargo.");
+
                     return;
                 }
 
-                // Validar Fecha de Entrada
                 if (!$("#ipttDateEntry").val()) {
+
                     alert("Por favor, ingresa una fecha de entrada.");
+
                     return;
                 }
 
-                // Validar Tipo de Documento
                 if (!$("#ipttTypeDocument").val()) {
+
                     alert("Por favor, ingresa el tipo de documento.");
+
                     return;
                 }
 
-                // Validar Nombres
                 if (!$("#ipttFirstName").val()) {
+
                     alert("Por favor, ingresa los nombres.");
+
                     return;
                 }
 
-                // Validar Apellidos
                 if (!$("#ipttLastName").val()) {
+
                     alert("Por favor, ingresa los apellidos.");
+
                     return;
                 }
 
-                // Validar Fecha de Nacimiento
                 if (!$("#ipttBirthdate").val()) {
+
                     alert("Por favor, ingresa la fecha de nacimiento.");
+
                     return;
                 }
 
-                // Validar Nacionalidad
                 if (!$("#ipttNationality").val()) {
+
                     alert("Por favor, ingresa la nacionalidad.");
+
                     return;
                 }
 
-                // Validar Teléfono
                 if (!$("#ipttPhone").val()) {
+
                     alert("Por favor, ingresa un teléfono válido.");
+
                     return;
                 }
 
-                // Validar Email
                 if (!$("#ipttEmail").val()) {
+
                     alert("Por favor, ingresa un correo electrónico válido.");
+
                     return;
                 }
 
-                // Validar Dirección
                 if (!$("#ipttAddress").val()) {
+
                     alert("Por favor, ingresa la dirección.");
+
                     return;
                 }
 
-                // Validar Zonas de Acceso
                 if ($("#ipttRole").val() === 'TRABAJADOR') {
+
                     if (!$("#ipttZoneAccess").val()) {
+
                         alert("Por favor, ingresa las zonas de acceso.");
+
                         return;
                     }
                 }
@@ -752,7 +785,9 @@
                 if (filteredEmployees.Role === 'ADMINISTRADOR') {
 
                     $('#ipttZoneAccess').prop('readonly', true);
+
                 }else{
+
                     $('#ipttZoneAccess').prop('readonly', false);
                 }
 
@@ -778,7 +813,7 @@
                         window.open('@Url.Action("Error", "Home")', '_self');
                     }
                 });
-                console.log(filteredEmployees.Id);
+
                 $('#ipttRole').val(filteredEmployees.Role);
                 $('#ipttId').val(filteredEmployees.Id);
                 $('#slttSpecialties').val(filteredEmployees.SpecialtyId);
@@ -879,7 +914,7 @@
 
                     var data = await jQuery.ajax({
 
-                        url: '@Url.Action("RegisterPerson", "Admins")' + `?positionId=${positionId}&pwd=${pwd}&role=${role}`,
+                        url: '@Url.Action("RegisterPerson", "Admins")' + `?positionId=${positionId}&pwd=${pwd}`,
                         method: 'POST',
                         data: information,
                         cache: false,
@@ -945,7 +980,7 @@
 
                     var data = await jQuery.ajax({
 
-                        url: '@Url.Action("UpdatePersonState", "Admins")' + `?role=${role}`,
+                        url: '@Url.Action("UpdatePersonState", "Admins")',
                         method: 'POST',
                         data: information,
                         cache: false,
@@ -982,7 +1017,7 @@
 
                     var data = await jQuery.ajax({
 
-                        url: '@Url.Action("UpdatePerson", "Admins")' + `?positionId=${positionId}&role=${role}`,
+                        url: '@Url.Action("UpdatePerson", "Admins")' + `?positionId=${positionId}`,
                         method: 'POST',
                         data: information,
                         cache: false,
@@ -1019,7 +1054,7 @@
 
                     var data = await jQuery.ajax({
 
-                        url: '@Url.Action("DeletePerson", "Admins")' + `?id=${id}&role=${role}`,
+                        url: '@Url.Action("DeletePerson", "Admins")' + `?id=${id}`,
                         method: 'GET',
                         dataType: 'json',
                         contentType: 'application/json; charset=utf-8'
