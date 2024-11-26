@@ -358,7 +358,22 @@ namespace SmartAssistance.Controllers
                 (true), "application/json");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdatePerson
+            (Employee employee, [FromQuery] int positionId)
+        {
+            context.Set<Employee>().Update(employee);
 
+            await context.SaveChangesAsync();
+
+            await context.Set<Assign>()
+                .Where(a => a.EmployeesId == employee.Id)
+                .ExecuteUpdateAsync(a => a
+                .SetProperty(u => u.PositionsId, positionId));
+
+            return Content(JsonConvert.SerializeObject
+                (true), "application/json");
+        }
 
         [HttpPost]
         public async Task<IActionResult> UpdatePersonState
